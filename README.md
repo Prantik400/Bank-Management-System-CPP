@@ -62,11 +62,17 @@ Project Structure
 Bank Management System/
 
 ├── auth/ → Login & Authentication
+
 ├── core/ → Banking operations (deposit, withdraw, transfer)
+
 ├── data/ → Data management (accounts storage)
+
 ├── models/ → Account & Transaction classes
+
 ├── ui/ → User & Admin menus
+
 ├── utils/ → Helper functions (time, input handling)
+
 ├── main.cpp → Entry point
 
 ---
