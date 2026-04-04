@@ -1,51 +1,125 @@
-# Bank Management System (C++)
+Bank Management System (C++)
 
-## Description
+Description
 
-A console-based Bank Management System developed in C++ using Object-Oriented Programming principles.
-It allows users to securely perform banking operations such as deposit, withdrawal, transfer, and transaction tracking.
+A console-based Bank Management System developed in C++ using Object-Oriented Programming (OOP) principles.
+This system simulates real-world banking operations with user and admin functionalities, transaction tracking, and a clean modular architecture.
 
-## Features
+---
 
-- Secure Login using PIN
-- Check Balance
-- Deposit Money
-- Withdraw Money
-- Transfer Funds
-- Transaction History
+Features
+
+User Features
+
+- Secure Login using Account ID & PIN
+- Check Account Balance
+- Deposit Money (with validation)
+- Withdraw Money (with balance check)
+- Transfer Funds between accounts
+- View Detailed Transaction History (with timestamp & balance)
 - Change PIN
-- Modular Code Structure
 
-## Tech Stack
+Admin Features
+
+- Admin Login (secured)
+- Create New Account
+- Delete Account
+- View All Accounts
+- View Total Bank Balance
+
+---
+
+Advanced Features (Interview Level)
+
+- Transaction System with:
+  - Type (Deposit / Withdraw / Transfer)
+  - Amount
+  - Balance After Transaction
+  - Timestamp
+
+- Input Validation:
+  - Prevent negative deposits
+  - Prevent over-withdrawal
+  - Handle invalid inputs
+
+- Clean Modular Architecture
+
+- Separation of Concerns (OOP Design)
+
+---
+
+Tech Stack
 
 - C++
 - Object-Oriented Programming (OOP)
-- STL
+- STL (Vectors, Strings)
+- Modular File Structure
 
-## Project Structure
+---
 
-- auth/ → Login system
-- data/ → Data handling
-- core/ → Banking operations
-- ui/ → Menus
-- models/ → Account structure
-- utils/ → Helper functions
+Project Structure
 
-## How to Run
+Bank Management System/
 
-Compile:
-g++ main.cpp data/DataManager.cpp ui/MainMenu.cpp ui/UserMenu.cpp auth/Auth.cpp core/AccountOperations.cpp -o main
+├── auth/ → Login & Authentication
+├── core/ → Banking operations (deposit, withdraw, transfer)
+├── data/ → Data management (accounts storage)
+├── models/ → Account & Transaction classes
+├── ui/ → User & Admin menus
+├── utils/ → Helper functions (time, input handling)
+├── main.cpp → Entry point
 
-Run:
+---
+
+How to Run
+
+Compile
+
+g++ main.cpp data/DataManager.cpp ui/MainMenu.cpp ui/UserMenu.cpp ui/AdminMenu.cpp auth/Auth.cpp core/AccountOperations.cpp models/Transaction.cpp utils/helpers.cpp -o main
+
+Run
+
 ./main
 
-## Status
+---
 
-Day 2 Completed
-Admin Panel Coming Next...
+Sample Output
 
-## Future Improvements
+--- Transaction History ---
 
-- Admin Panel
-- Database Integration (SQL)
-- GUI Interface
+Deposited Rs. | Rs.500 | Balance: Rs.1500 | Time: Sun Apr 5
+Withdrew Rs. | Rs.200 | Balance: Rs.1300 | Time: Sun Apr 5
+
+---
+
+Highlights
+
+- Real-world banking logic implementation
+- Strong OOP design (Classes, Encapsulation, Modularity)
+- Clean CLI-based UI
+- Scalable architecture (ready for SQL/GUI integration)
+
+---
+
+Future Improvements
+
+- Data Persistence (File / SQL Database)
+- GUI Interface (Qt / Web-based)
+- Advanced Security (Encryption)
+- Analytics Dashboard (Admin Insights)
+
+---
+
+Status
+
+User System Completed
+Admin Panel Completed
+Transaction System Enhanced
+Next: Data Persistence + SQL Integration
+
+---
+
+Author
+
+Prantik
+(B.Tech CSE Student | Aspiring Software Engineer 🚀)
