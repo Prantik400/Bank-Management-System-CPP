@@ -1,6 +1,9 @@
+#include <iomap>
 #include <iostream>
 #include "UserMenu.h"
 #include "../core/AccountOperations.h"
+#include "../models/Transaction.h"
+#include "../utils/helpers.h"
 
 using namespace std;
 
@@ -8,7 +11,7 @@ using namespace std;
 UserMenu::UserMenu(DataManager& dm, Account* user)
     : dataManager(dm), currentUser(user) {}
 
-// 🔥 PIN Verification
+//  PIN Verification
 bool UserMenu::verifyUserPin()
 {
     int pin;
@@ -59,21 +62,21 @@ void UserMenu::show()
     }
 }
 
-// ✅ Check Balance
+// Check Balance
 void UserMenu::checkBalance()
 {
     if (!verifyUserPin()) return;
 
-    cout << "Balance: ₹" << currentUser->balance << endl;
+    cout << "Balance: Rs." << currentUser->balance << endl;
 }
 
-// ✅ Deposit
+// Deposit
 void UserMenu::deposit()
 {
     if (!verifyUserPin()) return;
 
     double amount;
-    cout << "Enter amount: ";
+    cout << "Enter amount to deposit: ";
     cin >> amount;
 
     if (amount <= 0)
@@ -83,18 +86,19 @@ void UserMenu::deposit()
     }
 
     currentUser->balance += amount;
-    currentUser->addTransaction("Deposited ₹" + to_string(amount));
+    Transaction t("Deposited Rs.", amount, currentUser->balance, getCurrentTime());
+    currentUser->addTransaction(t);
 
     cout << "Deposit successful!\n";
 }
 
-// ✅ Withdraw
+// Withdraw
 void UserMenu::withdraw()
 {
     if (!verifyUserPin()) return;
 
     double amount;
-    cout << "Enter amount: ";
+    cout << "Enter amount to withdraw: ";
     cin >> amount;
 
     if (!AccountOperations::withdraw(*currentUser, amount))
@@ -103,11 +107,18 @@ void UserMenu::withdraw()
         return;
     }
 
-    currentUser->addTransaction("Withdrew ₹" + to_string(amount));
+    if(amount <=0 || amount > currentUser->balance)
+    {
+        cout << "Invalid amount!\n";
+        return;
+    }
+
+    Transaction t("Withdrew Rs.", amount, currentUser->balance, getCurrentTime());
+    currentUser->addTransaction(t);
     cout << "Withdrawal successful!\n";
 }
 
-// ✅ Transfer
+// Transfer
 void UserMenu::transfer()
 {
     if (!verifyUserPin()) return;
@@ -135,32 +146,46 @@ void UserMenu::transfer()
         return;
     }
 
-    currentUser->addTransaction("Transferred ₹" + to_string(amount) + " to ID " + to_string(id));
-    receiver->addTransaction("Received ₹" + to_string(amount));
+    if(amount <=0 || amount > currentUser->balance)
+    {
+        cout << "Invalid amount!\n";
+        return;
+    }
+
+    currentUser->balance -= amount;
+    receiver->balance += amount;
+    
+    Transaction t1("Transferred Rs.", amount, currentUser->balance, getCurrentTime());
+    Transaction t2("Received Rs.", amount, receiver->balance, getCurrentTime());
+    currentUser->addTransaction(t1);
+    receiver->addTransaction(t2);
 
     cout << "Transfer successful!\n";
 }
 
-// ✅ Transaction History
+//  Transaction History
 void UserMenu::showTransactionHistory()
 {
     if (!verifyUserPin()) return;
 
-    if (currentUser->transactionHistory.empty())
+    if (currentUser->transactions.empty())
     {
-        cout << "No transactions.\n";
+        cout << "No transactions found!\n";
         return;
     }
 
     cout << "\n--- Transaction History ---\n";
 
-    for (auto &t : currentUser->transactionHistory)
+    for (auto &t : currentUser->transactions)
     {
-        cout << t << endl;
+        cout << left << setw(18) << t.type 
+             << "| Rs." << setw(6) << t.amount 
+             << "| Balance: Rs." << setw(8) << t.balanceAfter 
+             << "|Time: " << t.timestamp << endl;
     }
 }
 
-// ✅ Change PIN
+//  Change PIN
 void UserMenu::changePin()
 {
     int oldPin, newPin;

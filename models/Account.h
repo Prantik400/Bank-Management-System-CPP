@@ -3,7 +3,9 @@
 
 #include <string>
 #include <vector>
+#include "Transaction.h"
 
+using namespace std;
 class Account
 {
 public:
@@ -12,9 +14,8 @@ public:
     double balance;
     int pin;
 
-    // 🔥 NEW: Transaction History
-    std::vector<std::string> transactionHistory;
-
+    //  NEW: Transaction History
+    vector<Transaction> transactions; // Store Transaction objects 
     // 🔹 Constructor
     Account(int id, std::string n, double bal, int p)
     {
@@ -28,9 +29,9 @@ public:
     Account() {}
 
     // 🔹 Add transaction
-    void addTransaction(const std::string &transaction)
+    void addTransaction(const Transaction &t)
     {
-        transactionHistory.push_back(transaction);
+        transactions.push_back(t);
     }
 };
 
