@@ -128,4 +128,4 @@ Next: Data Persistence + SQL Integration
 Author
 
 Prantik
-(B.Tech CSE Student | Aspiring Software Engineer 🚀)
+(B.Tech CSE Student | Aspiring Software Engineer)
