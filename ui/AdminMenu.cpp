@@ -1,9 +1,25 @@
+#include "../utils//helpers.h"
 #include "AdminMenu.h"
 #include <iostream>
+#include <limits>   // For numeric_limits
 using namespace std;
 
 // Constructor
 AdminMenu::AdminMenu(DataManager& dm) : dataManager(dm) {}
+
+bool AdminMenu::verifyAdmin()
+{
+    string password;
+
+    cout << "Enter Admin Password to confirm: ";
+    cin >> password;
+    if(password != "admin123") {
+        cout << "Incorrect password! Access denied.\n";
+        return false;
+    }
+
+    return true;
+}
 
 // Show Admin Menu
 void AdminMenu::show()
@@ -48,30 +64,97 @@ void AdminMenu::show()
 void AdminMenu::createAccount()
 {
     Account acc;
+    string input;
 
+    // Account ID
     cout << "Enter Account ID: ";
-    cin >> acc.accountId;
+    cin >> input;
 
+    if (!isInteger(input))
+    {
+        cout << "Invalid Account ID! Only integers allowed.\n";
+        return;
+    }
+
+    acc.accountId = stoi(input);
+
+    if (acc.accountId <= 0)
+    {
+        cout << "Invalid Account ID! Must be positive.\n";
+        return;
+    }
+
+    // Name
     cout << "Enter Name: ";
-    cin >> acc.name;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');  // FIX BUFFER
+    getline(cin, input);
 
+    if (input.empty() || !isValidName(input))
+    {
+        cout << "Invalid Name! Only letters and spaces allowed.\n";
+        return;
+    }
+
+    acc.name = input;
+
+    // Balance (supports decimal)
     cout << "Enter Initial Balance: ";
-    cin >> acc.balance;
+    cin >> input;
 
-    cout << "Set PIN: ";
-    cin >> acc.pin;
+    if (!isDouble(input))
+    {
+        cout << "Invalid Balance! Only numeric values allowed.\n";
+        return;
+    }
 
+    acc.balance = stod(input);
+
+    if (acc.balance < 0)
+    {
+        cout << "Invalid Balance! Must be non-negative.\n";
+        return;
+    }
+
+    // PIN (STRICT 4 DIGITS)
+    cout << "Set PIN (4 digits): ";
+    cin >> input;
+
+    if (!isNumber(input) || input.length() != 4)
+    {
+        cout << "Invalid PIN! Must be exactly 4 digits.\n";
+        return;
+    }
+
+    acc.pin = stoi(input);
+
+    // Admin Verification (FINAL STEP)
+    if (!verifyAdmin())
+    {
+        cout << "Admin verification failed!\n";
+        return;
+    }
+
+    //Create account
     dataManager.createAccount(acc);
 
     cout << "Account Created Successfully!\n";
 }
-
 // Delete an account
 void AdminMenu::deleteAccount()
 {
     int id;
     cout << "Enter Account ID to delete: ";
     cin >> id;
+
+    if(cin.fail() || id <= 0) {
+        cout << "Invalid Account ID!.\n";
+        clearInputBuffer();
+        return;
+    }
+
+    if(!verifyAdmin()) {
+        return;
+    }
 
     if (dataManager.deleteAccount(id))
         cout << "Account deleted successfully!\n";
@@ -82,6 +165,10 @@ void AdminMenu::deleteAccount()
 // View all accounts
 void AdminMenu::viewAllAccounts()
 {
+    if(!verifyAdmin()) {
+        return;
+    }
+
     auto& accounts = dataManager.getAllAccounts();
 
     if (accounts.empty())
@@ -102,6 +189,9 @@ void AdminMenu::viewAllAccounts()
 // View total bank balance
 void AdminMenu::viewTotalBalance()
 {
+    if(!verifyAdmin()) {
+        return;
+    }
     double total = dataManager.getTotalBankBalance();
     cout << "Total Bank Balance: Rs." << total << "\n";
 }

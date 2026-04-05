@@ -18,6 +18,13 @@ bool UserMenu::verifyUserPin()
     cout << "Enter PIN: ";
     cin >> pin;
 
+    if(cin.fail())
+    {
+        cout<< "Invalid input!\n";
+        clearInputBuffer();
+        return false;
+    }
+
     if (pin != currentUser->pin)
     {
         cout << "Incorrect PIN!\n";
@@ -73,18 +80,23 @@ void UserMenu::checkBalance()
 // Deposit
 void UserMenu::deposit()
 {
-    if (!verifyUserPin()) return;
-
     double amount;
     cout << "Enter amount to deposit: ";
     cin >> amount;
     
+    if(cin.fail())
+    {
+        cout<< "Invalid input! Please enter a number.\n";
+        clearInputBuffer();
+        return;
+    }
 
     if (amount <= 0)
     {
         cout << "Invalid amount!\n";
         return;
     }
+    if (!verifyUserPin()) return;
 
     currentUser->balance += amount;
     Transaction t("Deposited Rs.", amount, currentUser->balance, getCurrentTime());
@@ -96,21 +108,30 @@ void UserMenu::deposit()
 // Withdraw
 void UserMenu::withdraw()
 {
-    if (!verifyUserPin()) return;
+
 
     double amount;
     cout << "Enter amount to withdraw: ";
     cin >> amount;
 
-    if (!AccountOperations::withdraw(*currentUser, amount))
+    if(cin.fail())
     {
-        cout << "Withdrawal failed!\n";
+        cout<< "Invalid input! Please enter a number.\n";
+        clearInputBuffer();
         return;
     }
 
-    if(amount <=0 || amount > currentUser->balance)
+    if(amount <= 0)
     {
         cout << "Invalid amount!\n";
+        return;
+    }
+
+    if (!verifyUserPin()) return;
+
+    if (!AccountOperations::withdraw(*currentUser, amount))
+    {
+        cout << "Insufficient balance!\n";
         return;
     }
 
@@ -122,13 +143,19 @@ void UserMenu::withdraw()
 // Transfer
 void UserMenu::transfer()
 {
-    if (!verifyUserPin()) return;
-
+    
     int id;
     double amount;
 
     cout << "Enter receiver ID: ";
     cin >> id;
+
+    if(cin.fail())
+    {
+        cout<< "Invalid input!\n";
+        clearInputBuffer();
+        return;
+    }
 
     Account* receiver = dataManager.findAccountById(id);
 
@@ -141,23 +168,30 @@ void UserMenu::transfer()
     cout << "Enter amount: ";
     cin >> amount;
 
-    if (!AccountOperations::transfer(*currentUser, *receiver, amount))
+    if(cin.fail())
     {
-        cout << "Transfer failed!\n";
+        cout<< "Invalid input! Please enter a number.\n";
+        clearInputBuffer();
         return;
     }
 
-    if(amount <=0 || amount > currentUser->balance)
+    if(amount <= 0)
     {
         cout << "Invalid amount!\n";
         return;
     }
 
-    currentUser->balance -= amount;
-    receiver->balance += amount;
+    if (!verifyUserPin()) return;
+
+    if (!AccountOperations::transfer(*currentUser, *receiver, amount))
+    {
+        cout << "Insufficient balance!\n";
+        return;
+    }
     
     Transaction t1("Transferred Rs.", amount, currentUser->balance, getCurrentTime());
     Transaction t2("Received Rs.", amount, receiver->balance, getCurrentTime());
+
     currentUser->addTransaction(t1);
     receiver->addTransaction(t2);
 
@@ -202,6 +236,13 @@ void UserMenu::changePin()
 
     cout << "Enter new PIN: ";
     cin >> newPin;
+
+    if(cin.fail() || newPin < 1000 || newPin > 9999)
+    {
+        cout<< "Invalid input! PIN must be a 4-digit number.\n";
+        clearInputBuffer();
+        return;
+    }
 
     currentUser->pin = newPin;
     cout << "PIN changed successfully!\n";

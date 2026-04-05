@@ -8,6 +8,8 @@ class AdminMenu
 private:
     DataManager& dataManager;
 
+    bool verifyAdmin();
+
 public:
     AdminMenu(DataManager& dm);
     void show();
