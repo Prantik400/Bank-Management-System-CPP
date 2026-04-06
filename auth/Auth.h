@@ -5,6 +5,6 @@
 #include "../models/Account.h"
 
 bool verifyPin(const Account &acc, int enteredPin);
-Account* login(std::vector<Account> &accounts, int accountId, int enteredPin);
+Account* login(string accountId, int enteredPin);
 
 #endif

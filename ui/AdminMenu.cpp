@@ -1,4 +1,6 @@
 #include "../utils//helpers.h"
+#include <cctype>   // For isalnum
+#include <iostream>
 #include "AdminMenu.h"
 #include <iostream>
 #include <limits>   // For numeric_limits
@@ -66,23 +68,43 @@ void AdminMenu::createAccount()
     Account acc;
     string input;
 
-    // Account ID
-    cout << "Enter Account ID: ";
+    // Account ID (8 char alphanumeric + unique)
+    while (true)
+    {
+    cout << "Enter Account ID (8 alphanumeric): ";
     cin >> input;
 
-    if (!isInteger(input))
+    if (input.length() != 8)
     {
-        cout << "Invalid Account ID! Only integers allowed.\n";
-        return;
+        cout << " Must be exactly 8 characters!\n";
+        continue;
     }
 
-    acc.accountId = stoi(input);
-
-    if (acc.accountId <= 0)
+    bool valid = true;
+    for (char c : input)
     {
-        cout << "Invalid Account ID! Must be positive.\n";
-        return;
+        if (!isalnum(c))
+        {
+            valid = false;
+            break;
+        }
     }
+
+    if (!valid)
+    {
+        cout << " Only letters and numbers allowed!\n";
+        continue;
+    }
+
+    if (dataManager.accountExists(input))
+    {
+        cout << " ID already exists! Try another.\n";
+        continue;
+    }
+
+    acc.accountId = input;
+    break;
+   }
 
     // Name
     cout << "Enter Name: ";
@@ -116,16 +138,31 @@ void AdminMenu::createAccount()
     }
 
     // PIN (STRICT 4 DIGITS)
-    cout << "Set PIN (4 digits): ";
-    cin >> input;
+    string pin1, pin2;
 
-    if (!isNumber(input) || input.length() != 4)
+    while (true)
+   {
+    cout << "Enter PIN (4 digits): ";
+    cin >> pin1;
+
+    if (!isNumber(pin1) || pin1.length() != 4)
     {
-        cout << "Invalid PIN! Must be exactly 4 digits.\n";
-        return;
+        cout << " PIN must be exactly 4 digits!\n";
+        continue;
     }
 
-    acc.pin = stoi(input);
+    cout << "Confirm PIN: ";
+    cin >> pin2;
+
+    if (pin1 != pin2)
+    {
+        cout << " PINs do not match!\n";
+        continue;
+    }
+
+    acc.pin = stoi(pin1);
+    break;
+    }
 
     // Admin Verification (FINAL STEP)
     if (!verifyAdmin())
@@ -139,16 +176,17 @@ void AdminMenu::createAccount()
 
     cout << "Account Created Successfully!\n";
 }
+
+
 // Delete an account
 void AdminMenu::deleteAccount()
 {
-    int id;
+    string id;
     cout << "Enter Account ID to delete: ";
     cin >> id;
 
-    if(cin.fail() || id <= 0) {
+    if(id.empty()){
         cout << "Invalid Account ID!.\n";
-        clearInputBuffer();
         return;
     }
 
@@ -169,11 +207,11 @@ void AdminMenu::viewAllAccounts()
         return;
     }
 
-    auto& accounts = dataManager.getAllAccounts();
+    auto accounts = dataManager.getAllAccounts();
 
     if (accounts.empty())
     {
-        cout << "No accounts found.\n";
+        cout << "No accounts found!.\n";
         return;
     }
 

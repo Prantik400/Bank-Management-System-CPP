@@ -9,7 +9,7 @@ using namespace std;
 class Account
 {
 public:
-    int accountId;
+    string accountId;
     std::string name;
     double balance;
     int pin;

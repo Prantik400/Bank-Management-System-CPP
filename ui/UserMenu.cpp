@@ -223,27 +223,70 @@ void UserMenu::showTransactionHistory()
 //  Change PIN
 void UserMenu::changePin()
 {
-    int oldPin, newPin;
+    int oldPin;
 
     cout << "Enter current PIN: ";
     cin >> oldPin;
 
+    // Step 1: Verify old PIN
     if (oldPin != currentUser->pin)
     {
-        cout << "Wrong PIN!\n";
+        cout << "❌ Wrong PIN!\n";
         return;
     }
 
-    cout << "Enter new PIN: ";
-    cin >> newPin;
+    // Step 2: Take new PIN with confirmation
+    string pin1, pin2;
 
-    if(cin.fail() || newPin < 1000 || newPin > 9999)
+    while (true)
     {
-        cout<< "Invalid input! PIN must be a 4-digit number.\n";
-        clearInputBuffer();
+        cout << "Enter new PIN (4 digits): ";
+        cin >> pin1;
+
+        // Validate format
+        if (!isNumber(pin1) || pin1.length() != 4)
+        {
+            cout << "❌ PIN must be exactly 4 digits!\n";
+            continue;
+        }
+
+        cout << "Confirm new PIN: ";
+        cin >> pin2;
+
+        // Match check
+        if (pin1 != pin2)
+        {
+            cout << " PINs do not match!\n";
+            continue;
+        }
+
+        break;
+    }
+
+    int newPin = stoi(pin1);
+
+    // Step 3: Update in DATABASE (VERY IMPORTANT)
+    MYSQL* conn = DB::connect();
+    if (conn == NULL)
+    {
+        cout << " Database connection failed!\n";
         return;
     }
 
+    string query = "UPDATE accounts SET pin = " + to_string(newPin) +
+                   " WHERE account_id = '" + currentUser->accountId + "'";
+
+    if (mysql_query(conn, query.c_str()))
+    {
+        cout << " Failed to update PIN: " << mysql_error(conn) << endl;
+        mysql_close(conn);
+        return;
+    }
+
+    mysql_close(conn);
+
+    // Step 4: Update in memory
     currentUser->pin = newPin;
-    cout << "PIN changed successfully!\n";
+
+    cout << " PIN changed successfully!\n";
 }

@@ -28,29 +28,30 @@ void MainMenu::show()
         // ================= USER LOGIN =================
         case 1:
         {
-            int id, pin;
+        string id;
+        int pin;
 
-            cout << "Enter Account ID: ";
-            cin >> id;
+        cout << "Enter Account ID: ";
+        cin >> id;
 
-            cout << "Enter PIN: ";
-            cin >> pin;
+        cout << "Enter PIN: ";
+        cin >> pin;
 
-            Account* user = login(dataManager.getAllAccounts(), id, pin);
+        Account* user = login(id, pin);
 
-            if (user != nullptr)
-            {
-                cout << "Login Successful!\n";
+        if (user != nullptr)
+        {
+            cout << "Login Successful!\n";
 
-                UserMenu userMenu(dataManager, user);
-                userMenu.show();   //  Go to User Menu
-            }
-            else
-            {
-                cout << "Login Failed!\n";
-            }
+            UserMenu userMenu(dataManager, user);
+            userMenu.show();
+        }
+        else
+        {
+            cout << "Invalid Account ID or PIN!\n";
+        }
 
-            break;
+        break;
         }
 
         // ================= ADMIN LOGIN =================
