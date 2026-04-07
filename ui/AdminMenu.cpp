@@ -1,9 +1,8 @@
-#include "../utils//helpers.h"
-#include <cctype>   // For isalnum
-#include <iostream>
+#include "../utils/helpers.h"
+#include <cctype>
 #include "AdminMenu.h"
 #include <iostream>
-#include <limits>   // For numeric_limits
+
 using namespace std;
 
 // Constructor
@@ -14,8 +13,11 @@ bool AdminMenu::verifyAdmin()
     string password;
 
     cout << "Enter Admin Password to confirm: ";
-    cin >> password;
-    if(password != "admin123") {
+    getline(cin, password);
+    password = trim(password);
+
+    if (password != "admin123")
+    {
         cout << "Incorrect password! Access denied.\n";
         return false;
     }
@@ -26,6 +28,7 @@ bool AdminMenu::verifyAdmin()
 // Show Admin Menu
 void AdminMenu::show()
 {
+    string input;
     int choice;
 
     while (true)
@@ -37,22 +40,24 @@ void AdminMenu::show()
         cout << "4. View Total Bank Balance\n";
         cout << "5. Logout\n";
         cout << "Enter choice: ";
-        cin >> choice;
+
+        getline(cin, input);
+        input = trim(input);
+
+        if (!isNumber(input))
+        {
+            cout << "Invalid input! Enter a number.\n";
+            continue;
+        }
+
+        choice = stoi(input);
 
         switch (choice)
         {
-        case 1:
-            createAccount();
-            break;
-        case 2:
-            deleteAccount();
-            break;
-        case 3:
-            viewAllAccounts();
-            break;
-        case 4:
-            viewTotalBalance();
-            break;
+        case 1: createAccount(); break;
+        case 2: deleteAccount(); break;
+        case 3: viewAllAccounts(); break;
+        case 4: viewTotalBalance(); break;
         case 5:
             cout << "Logging out...\n";
             return;
@@ -62,137 +67,159 @@ void AdminMenu::show()
     }
 }
 
-// Create a new account
+// Create Account
 void AdminMenu::createAccount()
 {
     Account acc;
     string input;
 
-    // Account ID (8 char alphanumeric + unique)
+    // Account ID
     while (true)
     {
-    cout << "Enter Account ID (8 alphanumeric): ";
-    cin >> input;
+        cout << "Enter Account ID (8 alphanumeric): ";
+        getline(cin, input);
+        input = trim(input);
 
-    if (input.length() != 8)
-    {
-        cout << " Must be exactly 8 characters!\n";
-        continue;
-    }
-
-    bool valid = true;
-    for (char c : input)
-    {
-        if (!isalnum(c))
+        if (input.length() != 8)
         {
-            valid = false;
-            break;
+            cout << "Must be exactly 8 characters!\n";
+            continue;
         }
-    }
 
-    if (!valid)
-    {
-        cout << " Only letters and numbers allowed!\n";
-        continue;
-    }
+        bool valid = true;
+        for (char c : input)
+        {
+            if (!isalnum(c))
+            {
+                valid = false;
+                break;
+            }
+        }
 
-    if (dataManager.accountExists(input))
-    {
-        cout << " ID already exists! Try another.\n";
-        continue;
-    }
+        if (!valid)
+        {
+            cout << "Only letters and numbers allowed!\n";
+            continue;
+        }
 
-    acc.accountId = input;
-    break;
-   }
+        if (dataManager.accountExists(input))
+        {
+            cout << "ID already exists! Try another.\n";
+            continue;
+        }
+
+        acc.accountId = input;
+        break;
+    }
 
     // Name
-    cout << "Enter Name: ";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');  // FIX BUFFER
-    getline(cin, input);
-
-    if (input.empty() || !isValidName(input))
-    {
-        cout << "Invalid Name! Only letters and spaces allowed.\n";
-        return;
-    }
-
-    acc.name = input;
-
-    // Balance (supports decimal)
-    cout << "Enter Initial Balance: ";
-    cin >> input;
-
-    if (!isDouble(input))
-    {
-        cout << "Invalid Balance! Only numeric values allowed.\n";
-        return;
-    }
-
-    acc.balance = stod(input);
-
-    if (acc.balance < 0)
-    {
-        cout << "Invalid Balance! Must be non-negative.\n";
-        return;
-    }
-
-    // PIN (STRICT 4 DIGITS)
-    string pin1, pin2;
-
     while (true)
-   {
-    cout << "Enter PIN (4 digits): ";
-    cin >> pin1;
-
-    if (!isNumber(pin1) || pin1.length() != 4)
     {
-        cout << " PIN must be exactly 4 digits!\n";
-        continue;
+        cout << "Enter Name: ";
+        getline(cin, input);
+        input = trim(input);
+
+        if (input.empty())
+        {
+            cout << "Name cannot be empty!\n";
+            continue;
+        }
+
+        if (!isValidName(input))
+        {
+            cout << "Only letters and spaces allowed!\n";
+            continue;
+        }
+
+        acc.name = input;
+        break;
     }
 
-    cout << "Confirm PIN: ";
-    cin >> pin2;
-
-    if (pin1 != pin2)
+    // Balance
+    while (true)
     {
-        cout << " PINs do not match!\n";
-        continue;
+        cout << "Enter Initial Balance: ";
+        getline(cin, input);
+        input = trim(input);
+
+        if (!isDouble(input))
+        {
+            cout << "Invalid Balance!\n";
+            continue;
+        }
+
+        acc.balance = stod(input);
+
+        if (acc.balance < 0)
+        {
+            cout << "Balance must be non-negative!\n";
+            continue;
+        }
+
+        break;
     }
 
-    acc.pin = stoi(pin1);
-    break;
+    // PIN
+    string pin1, pin2;
+    while (true)
+    {
+        cout << "Enter PIN (4 digits): ";
+        getline(cin, pin1);
+
+        if (!isNumber(pin1) || pin1.length() != 4)
+        {
+            cout << "PIN must be exactly 4 digits!\n";
+            continue;
+        }
+
+        cout << "Confirm PIN: ";
+        getline(cin, pin2);
+
+        if (pin1 != pin2)
+        {
+            cout << "PINs do not match!\n";
+            continue;
+        }
+
+        acc.pin = stoi(pin1);
+        break;
     }
 
-    // Admin Verification (FINAL STEP)
     if (!verifyAdmin())
     {
         cout << "Admin verification failed!\n";
         return;
     }
 
-    //Create account
     dataManager.createAccount(acc);
+
+    // Initial transaction
+    dataManager.addTransaction(
+        acc.accountId,
+        "Account Created by Admin(System)",
+        acc.balance,
+        acc.balance
+    );
 
     cout << "Account Created Successfully!\n";
 }
 
-
-// Delete an account
+// Delete Account
 void AdminMenu::deleteAccount()
 {
     string id;
+
     cout << "Enter Account ID to delete: ";
-    cin >> id;
+    getline(cin, id);
+    id = trim(id);
 
-    if(id.empty()){
-        cout << "Invalid Account ID!.\n";
+    if (id.length() != 8)
+    {
+        cout << "Invalid Account ID!\n";
         return;
     }
 
-    if(!verifyAdmin()) {
-        return;
-    }
+    if (!verifyAdmin()) return;
 
     if (dataManager.deleteAccount(id))
         cout << "Account deleted successfully!\n";
@@ -200,18 +227,16 @@ void AdminMenu::deleteAccount()
         cout << "Account not found!\n";
 }
 
-// View all accounts
+// View Accounts
 void AdminMenu::viewAllAccounts()
 {
-    if(!verifyAdmin()) {
-        return;
-    }
+    if (!verifyAdmin()) return;
 
     auto accounts = dataManager.getAllAccounts();
 
     if (accounts.empty())
     {
-        cout << "No accounts found!.\n";
+        cout << "No accounts found!\n";
         return;
     }
 
@@ -224,12 +249,11 @@ void AdminMenu::viewAllAccounts()
     }
 }
 
-// View total bank balance
+// Total Balance
 void AdminMenu::viewTotalBalance()
 {
-    if(!verifyAdmin()) {
-        return;
-    }
+    if (!verifyAdmin()) return;
+
     double total = dataManager.getTotalBankBalance();
     cout << "Total Bank Balance: Rs." << total << "\n";
 }

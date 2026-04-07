@@ -2,14 +2,17 @@
 #define HELPERS_H
 
 #include <string>
-using namespace std;
 
-string getCurrentTime();
+//removed using namespace std
+
+std::string getCurrentTime();
 void clearInputBuffer();
 
-bool isInteger(const string& s);
-bool isDouble(const string& s);
-bool isNumber(const string& s);
-bool isValidName(const string& s);
+bool isInteger(const std::string& s);
+bool isDouble(const std::string& s);
+bool isNumber(const std::string& s);
+bool isValidName(const std::string& s);
+
+std::string trim(const std::string& str);
 
 #endif

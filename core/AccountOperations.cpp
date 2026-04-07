@@ -2,12 +2,14 @@
 
 namespace AccountOperations
 {
+
 bool deposit(Account &acc, double amount)
 {
     if (amount <= 0)
     {
-        return false; // Cannot deposit a negative amount
+        return false;
     }
+
     acc.balance += amount;
     return true;
 }
@@ -16,20 +18,24 @@ bool withdraw(Account &acc, double amount)
 {
     if (amount <= 0 || amount > acc.balance)
     {
-        return false; // Cannot withdraw a negative amount or more than the balance
+        return false;
     }
+
     acc.balance -= amount;
     return true;
 }
 
 bool transfer(Account &sender, Account &receiver, double amount)
 {
-    if (amount <= 0)
+    //  Proper validation
+    if (amount <= 0 || amount > sender.balance)
     {
-        return false; // Cannot deposit a negative amount
+        return false;
     }
+
     sender.balance -= amount;
     receiver.balance += amount;
+
     return true;
 }
 
@@ -37,4 +43,5 @@ double checkBalance(const Account &acc)
 {
     return acc.balance;
 }
+
 }

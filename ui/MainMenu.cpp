@@ -3,6 +3,7 @@
 #include "MainMenu.h"
 #include "UserMenu.h"
 #include "AdminMenu.h"
+#include "../utils/helpers.h"
 
 using namespace std;
 
@@ -12,6 +13,7 @@ MainMenu::MainMenu(DataManager& dm) : dataManager(dm) {}
 // Main Menu UI
 void MainMenu::show()
 {
+    string input;
     int choice;
 
     while (true)
@@ -21,37 +23,62 @@ void MainMenu::show()
         cout << "2. Admin Login\n";
         cout << "3. Exit\n";
         cout << "Enter choice: ";
-        cin >> choice;
+
+        getline(cin, input);
+        input = trim(input);
+
+        if (!isNumber(input))
+        {
+            cout << "Invalid input! Enter a number.\n";
+            continue;
+        }
+
+        choice = stoi(input);
 
         switch (choice)
         {
         // ================= USER LOGIN =================
         case 1:
         {
-        string id;
-        int pin;
+            string id, pinInput;
 
-        cout << "Enter Account ID: ";
-        cin >> id;
+            cout << "Enter Account ID: ";
+            getline(cin, id);
+            id = trim(id);
 
-        cout << "Enter PIN: ";
-        cin >> pin;
+            if (id.empty())
+            {
+                cout << "Account ID cannot be empty!\n";
+                break;
+            }
 
-        Account* user = login(id, pin);
+            cout << "Enter PIN: ";
+            getline(cin, pinInput);
+            pinInput = trim(pinInput);
 
-        if (user != nullptr)
-        {
-            cout << "Login Successful!\n";
+            if (!isNumber(pinInput))
+            {
+                cout << "Invalid PIN!\n";
+                break;
+            }
 
-            UserMenu userMenu(dataManager, user);
-            userMenu.show();
-        }
-        else
-        {
-            cout << "Invalid Account ID or PIN!\n";
-        }
+            int pin = stoi(pinInput);
 
-        break;
+            Account* user = login(id, pin);
+
+            if (user != nullptr)
+            {
+                cout << "Login Successful!\n";
+
+                UserMenu userMenu(dataManager, user);
+                userMenu.show();
+            }
+            else
+            {
+                cout << "Invalid Account ID or PIN!\n";
+            }
+
+            break;
         }
 
         // ================= ADMIN LOGIN =================
@@ -60,18 +87,19 @@ void MainMenu::show()
             string username, password;
 
             cout << "Enter Admin Username: ";
-            cin >> username;
+            getline(cin, username);
+            username = trim(username);
 
             cout << "Enter Admin Password: ";
-            cin >> password;
+            getline(cin, password);
+            password = trim(password);
 
-            //  Simple Hardcoded Admin Check
             if (username == "admin" && password == "admin123")
             {
                 cout << "Admin Login Successful!\n";
 
                 AdminMenu adminMenu(dataManager);
-                adminMenu.show();   //  Go to Admin Menu
+                adminMenu.show();
             }
             else
             {
@@ -86,7 +114,6 @@ void MainMenu::show()
             cout << "Exiting...\n";
             return;
 
-        // ================= INVALID =================
         default:
             cout << "Invalid choice!\n";
         }

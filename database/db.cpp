@@ -11,7 +11,7 @@ MYSQL* DB::connect() {
         return NULL;
     }
 
-    cout<<"\nDB Connected Successfully!\n"<<endl;
+    //cout<<"\nDB Connected Successfully!\n"<<endl;
 
     return conn;
 }

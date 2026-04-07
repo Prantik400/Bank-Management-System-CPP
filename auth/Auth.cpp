@@ -4,17 +4,20 @@
 
 using namespace std;
 
+// ================= VERIFY PIN =================
 bool verifyPin(const Account &acc, int enteredPin)
 {
     return acc.pin == enteredPin;
 }
 
+// ================= LOGIN =================
 Account* login(string accountId, int pin)
 {
     MYSQL* conn = DB::connect();
     if (conn == NULL) return nullptr;
 
-    string query = "SELECT * FROM accounts WHERE account_id = '" + accountId + "' AND pin = " + to_string(pin);
+    string query = "SELECT * FROM accounts WHERE account_id = '" +
+                   accountId + "' AND pin = " + to_string(pin);
 
     if (mysql_query(conn, query.c_str()))
     {
@@ -36,7 +39,7 @@ Account* login(string accountId, int pin)
 
     if (row == NULL)
     {
-        cout << " Invalid Account ID or PIN!\n";
+        // ❌ Don't print error here (handled in MainMenu)
         mysql_free_result(result);
         mysql_close(conn);
         return nullptr;

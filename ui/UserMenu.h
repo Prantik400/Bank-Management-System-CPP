@@ -11,8 +11,11 @@ private:
     Account* currentUser;
 
     bool verifyUserPin();
+
 public:
     UserMenu(DataManager& dm, Account* user);
+
+    ~UserMenu();
 
     void show();
 
