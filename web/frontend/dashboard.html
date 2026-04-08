@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar">
+        <h2>🏦 Bank</h2>
+        <ul>
+            <li class="active">🏠 Dashboard</li>
+            <li onclick="showDeposit()">💰 Deposit</li>
+            <li onclick="showWithdraw()">💸 Withdraw</li>
+            <li onclick="showTransfer()">🔄 Transfer</li>
+            <li>📜 Transactions</li>
+            <li>⚙️ Settings</li>
+            <li>🚪 Logout</li>
+        </ul>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
+
+        <h1>Welcome, Prantik 👋</h1>
+
+        <!-- BALANCE CARD -->
+        <div class="card balance-card">
+            <p>Total Balance</p>
+            <h2>₹ 2,000</h2>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="actions">
+            <button onclick="showDeposit()">💰 Deposit</button>
+            <button onclick="showWithdraw()">💸 Withdraw</button>
+            <button onclick="showTransfer()">🔄 Transfer</button>
+        </div>
+
+        <!-- ===== DEPOSIT FORM ===== -->
+        <div id="depositForm" class="form-box">
+            <h3>Deposit Money</h3>
+            <input type="number" placeholder="Enter amount">
+            <button>Submit</button>
+        </div>
+
+        <!-- ===== WITHDRAW FORM ===== -->
+        <div id="withdrawForm" class="form-box">
+            <h3>Withdraw Money</h3>
+            <input type="number" placeholder="Enter amount">
+            <button>Submit</button>
+        </div>
+
+        <!-- ===== TRANSFER FORM ===== -->
+        <div id="transferForm" class="form-box">
+            <h3>Transfer Money</h3>
+            <input type="text" placeholder="Receiver ID">
+            <input type="number" placeholder="Enter amount">
+            <button>Submit</button>
+        </div>
+
+        <!-- ===== TRANSACTION TABLE ===== -->
+        <div class="card transaction-card">
+            <h3>Recent Transactions</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Balance</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Account Created</td>
+                        <td class="credit">+ ₹2000</td>
+                        <td>₹2000</td>
+                        <td>2026-04-07</td>
+                    </tr>
+
+                    <tr>
+                        <td>Deposit</td>
+                        <td class="credit">+ ₹200</td>
+                        <td>₹2200</td>
+                        <td>2026-04-07</td>
+                    </tr>
+
+                    <tr>
+                        <td>Transfer</td>
+                        <td class="debit">- ₹400</td>
+                        <td>₹1800</td>
+                        <td>2026-04-07</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== JS ===== -->
+<script src="dashboard.js"></script>
+
+</body>
+</html>
