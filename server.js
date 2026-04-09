@@ -5,6 +5,7 @@ const path = require("path");
 const app = express();
 const PORT = 3000;
 
+app.use(express.static("web/frontend"));
 // Path to your C++ exe
 const exePath = path.join(__dirname, "web/backend/api.exe");
 
@@ -61,6 +62,15 @@ app.get("/transfer", (req, res) => {
   const amount = req.query.amount;
 
   runCpp(`transfer ${from} ${to} ${amount}`, (result) => {
+    res.send(result);
+  });
+});
+
+//Transaction
+app.get("/transactions", (req, res) => {
+  const user = req.query.user;
+
+  runCpp(`transactions ${user}`, (result) => {
     res.send(result);
   });
 });

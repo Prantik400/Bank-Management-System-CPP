@@ -2,27 +2,44 @@
 <html lang="en">
   <head>
     <title>Bank System</title>
+
     <link rel="stylesheet" href="style.css" />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
       rel="stylesheet"
     />
   </head>
-  <body class="dark">
+
+  <body>
     <div class="login-container">
       <h1>Bank System</h1>
-      <p style="margin-bottom: 20px;">Secure Digital Banking</p>
+      <p>Secure Digital Banking</p>
 
+      <!-- ===== ACCOUNT ID ===== -->
       <div class="input-group">
-        <input type="text" required />
-        <label>Account ID</label>
+        <input
+          id="accountId"
+          type="text"
+          placeholder="Enter Account ID"
+          autocomplete="off"
+        />
       </div>
 
-      <div class="input-group">
-        <input type="password" required />
-        <label>PIN</label>
+      <!-- ===== PIN ===== -->
+      <div class="input-group password-box">
+        <input
+          id="pin"
+          type="password"
+          placeholder="Enter PIN"
+          autocomplete="new-password"
+        />
       </div>
 
+      <!-- ===== ERROR MESSAGE ===== -->
+      <p id="errorMsg" class="error-msg"></p>
+
+      <!-- ===== LOGIN BUTTON ===== -->
       <button onclick="login()">Login</button>
     </div>
 
