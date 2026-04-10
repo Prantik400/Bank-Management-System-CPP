@@ -1,59 +1,108 @@
 const BASE_URL = "http://localhost:3000";
 
-// 👁 SHOW / HIDE PASSWORD
-function togglePassword() {
-  let pinInput = document.getElementById("pin");
+window.onload = function () {
+  const params = new URLSearchParams(window.location.search);
+  const msg = params.get("msg");
 
-  if (pinInput.type === "password") {
-    pinInput.type = "text";
-  } else {
-    pinInput.type = "password";
+  if (msg) {
+    const errorBox = document.getElementById("errorMsg");
+    errorBox.style.color = "#22c55e";
+    errorBox.innerText = msg;
+
+    // ✅ REMOVE PARAM FROM URL (VERY IMPORTANT)
+    window.history.replaceState({}, document.title, "index.html");
   }
+};
+
+
+// ================= GET ELEMENT =================
+function get(id) {
+  return document.getElementById(id);
 }
 
-// 🔐 LOGIN FUNCTION
-async function login() {
-  let id = document.getElementById("accountId").value.trim();
-  let pin = document.getElementById("pin").value.trim();
-  let error = document.getElementById("errorMsg");
+// ================= ADMIN UI DETECTION =================
+get("accountId").addEventListener("input", function () {
+  let val = this.value.trim().toLowerCase();
+  let container = document.querySelector(".login-container");
 
-  // RESET ERROR
-  error.innerText = "";
-
-  // ✅ VALIDATION
-  if (!id || !pin) {
-    error.innerText = "⚠️ Please fill all fields";
-    return;
+  if (val === "admin") {
+    container.classList.add("admin-mode");
+  } else {
+    container.classList.remove("admin-mode");
   }
+});
 
-  if (pin.length < 4) {
-    error.innerText = "⚠️ PIN must be at least 4 digits";
+// ================= LOGIN =================
+async function login() {
+  let id = get("accountId").value.trim();
+  let pin = get("pin").value.trim();
+  let errorMsg = get("errorMsg");
+  let button = document.querySelector("button");
+
+  // RESET
+  errorMsg.innerText = "";
+  get("accountId").classList.remove("input-error");
+  get("pin").classList.remove("input-error");
+
+  // VALIDATION
+  if (!id || !pin) {
+    errorMsg.innerText = "⚠ Please enter ID and PIN";
+    if (!id) get("accountId").classList.add("input-error");
+    if (!pin) get("pin").classList.add("input-error");
     return;
   }
 
   try {
-    // 🔥 BACKEND LOGIN API (you can change endpoint later)
-    let response = await fetch(`${BASE_URL}/login?user=${id}&pin=${pin}`);
+    // LOADING STATE
+    button.innerText = "Logging in...";
+    button.disabled = true;
 
-    let result = await response.text();
+    let res = await fetch(`${BASE_URL}/login?user=${id}&pin=${pin}`);
+    let data = await res.text();
 
-    // ❌ INVALID LOGIN
-    if (result.toLowerCase().includes("invalid")) {
-      error.innerText = "❌ Invalid ID or PIN";
+    console.log("Login Response:", data);
+
+    // RESET BUTTON
+    button.innerText = "Login";
+    button.disabled = false;
+
+    // ❌ INVALID
+    if (data === "INVALID") {
+      errorMsg.innerText = "❌ Invalid ID or PIN";
+      get("accountId").classList.add("input-error");
+      get("pin").classList.add("input-error");
       return;
     }
 
-    // ✅ SUCCESS
-    localStorage.setItem("user", id); // save user
-    window.location.href = "dashboard.html";
+    // 👑 ADMIN
+    if (data === "ADMIN") {
+      localStorage.setItem("user", id);
+      localStorage.setItem("role", "admin");
+
+      window.location.href = "admin.html";
+      return;
+    }
+
+    // 👤 USER
+    if (data.startsWith("USER:")) {
+      let name = data.split(":")[1];
+
+      localStorage.setItem("user", id);
+      localStorage.setItem("name", name);
+      localStorage.setItem("role", "user");
+
+      window.location.href = "dashboard.html";
+    }
   } catch (err) {
-    error.innerText = "⚠️ Server error. Try again.";
     console.error(err);
+    errorMsg.innerText = "⚠ Server error. Try again.";
+    button.innerText = "Login";
+    button.disabled = false;
   }
 }
 
-// 🔄 ENTER KEY SUPPORT
-document.addEventListener("keypress", function (e) {
+// ================= ENTER KEY =================
+document.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
     login();
   }

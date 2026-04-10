@@ -1,83 +1,149 @@
 const express = require("express");
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 const path = require("path");
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.static("web/frontend"));
-// Path to your C++ exe
+
 const exePath = path.join(__dirname, "web/backend/api.exe");
 
-// 🔹 Helper function to run C++ inside MinGW bash
-function runCpp(command, callback) {
-  exec(`cmd /c "${exePath}" ${command}`, (error, stdout, stderr) => {
-    console.log("STDOUT:", stdout);
-    console.log("STDERR:", stderr);
+// ================= CORE RUN FUNCTION =================
+function runCppInteractive(args, inputs, callback) {
+  const process = spawn(exePath, args);
 
-    if (error) {
-      return callback(stdout || "ERROR");
-    }
-    callback(stdout.trim());
+  let output = "";
+  let errorOutput = "";
+
+  process.stdout.on("data", (data) => {
+    output += data.toString();
   });
+
+  process.stderr.on("data", (data) => {
+    errorOutput += data.toString();
+  });
+
+  process.on("close", () => {
+    console.log("CMD:", args.join(" "));
+    console.log("OUTPUT:", output);
+    console.log("ERROR:", errorOutput);
+
+    callback(output.trim());
+  });
+
+  // 🔥 simulate user input
+  if (inputs && inputs.length > 0) {
+    inputs.forEach((input) => {
+      process.stdin.write(input + "\n");
+    });
+  }
+
+  process.stdin.end();
 }
 
-// ===============================
-// ✅ ROUTES
-// ===============================
+// ================= LOGIN =================
+app.get("/login", (req, res) => {
+  const { user, pin } = req.query;
 
-// 🔹 Get Balance
+  runCppInteractive(["login"], [user, pin], (result) => {
+    res.send(result || "INVALID");
+  });
+});
+
+// ================= BALANCE =================
 app.get("/balance", (req, res) => {
-  const user = req.query.user;
+  const { user } = req.query;
 
-  runCpp(`balance ${user}`, (result) => {
-    res.send(result);
+  runCppInteractive(["balance"], [user], (result) => {
+    res.send(result || "0");
   });
 });
 
-// 🔹 Deposit
+// ================= DEPOSIT =================
 app.get("/deposit", (req, res) => {
-  const user = req.query.user;
-  const amount = req.query.amount;
+  const { user, amount, pin } = req.query;
 
-  runCpp(`deposit ${user} ${amount}`, (result) => {
+  runCppInteractive(["deposit"], [user, amount, pin], (result) => {
     res.send(result);
   });
 });
 
-// 🔹 Withdraw
+// ================= WITHDRAW =================
 app.get("/withdraw", (req, res) => {
-  const user = req.query.user;
-  const amount = req.query.amount;
+  const { user, amount, pin } = req.query;
 
-  runCpp(`withdraw ${user} ${amount}`, (result) => {
+  runCppInteractive(["withdraw"], [user, amount, pin], (result) => {
     res.send(result);
   });
 });
 
-// 🔹 Transfer
+// ================= TRANSFER =================
 app.get("/transfer", (req, res) => {
-  const from = req.query.from;
-  const to = req.query.to;
-  const amount = req.query.amount;
+  const { from, to, amount, pin } = req.query;
 
-  runCpp(`transfer ${from} ${to} ${amount}`, (result) => {
+  runCppInteractive(["transfer"], [from, to, amount, pin], (result) => {
     res.send(result);
   });
 });
 
-//Transaction
+// ================= TRANSACTIONS =================
 app.get("/transactions", (req, res) => {
-  const user = req.query.user;
+  const { user } = req.query;
 
-  runCpp(`transactions ${user}`, (result) => {
+  runCppInteractive(["transactions"], [user], (result) => {
+    res.send(result || "");
+  });
+});
+
+// ================= CHANGE PIN =================
+app.get("/changePin", (req, res) => {
+  const { user, oldPin, newPin } = req.query;
+
+  runCppInteractive(["changePin"], [user, oldPin, newPin, newPin], (result) => {
     res.send(result);
   });
 });
 
-// ===============================
-// ✅ START SERVER
-// ===============================
+// ================= ADMIN =================
+
+// CREATE ACCOUNT
+app.get("/create", (req, res) => {
+  const { id, name, pin } = req.query;
+
+  runCppInteractive(
+    ["create"],
+    [id, name, "0", pin, pin, "admin123"],
+    (result) => {
+      res.send(result);
+    },
+  );
+});
+
+// DELETE ACCOUNT
+app.get("/delete", (req, res) => {
+  const { id } = req.query;
+
+  runCppInteractive(["delete"], [id, "admin123"], (result) => {
+    res.send(result);
+  });
+});
+
+// ALL ACCOUNTS
+app.get("/allAccounts", (req, res) => {
+  runCppInteractive(["allAccounts"], ["admin123"], (result) => {
+    res.send(result);
+  });
+});
+
+// TOTAL
+app.get("/total", (req, res) => {
+  runCppInteractive(["total"], ["admin123"], (result) => {
+    res.send(result);
+  });
+});
+
+// ================= START =================
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
