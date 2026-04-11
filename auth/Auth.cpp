@@ -39,7 +39,7 @@ Account* login(string accountId, int pin)
 
     if (row == NULL)
     {
-        // ❌ Don't print error here (handled in MainMenu)
+        // Don't print error here (handled in MainMenu)
         mysql_free_result(result);
         mysql_close(conn);
         return nullptr;

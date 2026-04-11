@@ -10,8 +10,5 @@ MYSQL* DB::connect() {
         cout << "Connection Failed: " << mysql_error(conn) << endl;
         return NULL;
     }
-
-    //cout<<"\nDB Connected Successfully!\n"<<endl;
-
     return conn;
 }

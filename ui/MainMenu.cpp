@@ -19,10 +19,10 @@ void MainMenu::show()
     while (true)
     {
         cout << "\n===== BANK SYSTEM =====\n";
-        cout << "1. User Login\n";
+        cout << "\n1. User Login\n";
         cout << "2. Admin Login\n";
         cout << "3. Exit\n";
-        cout << "Enter choice: ";
+        cout << "\nEnter choice: ";
 
         getline(cin, input);
         input = trim(input);
@@ -40,8 +40,10 @@ void MainMenu::show()
         // ================= USER LOGIN =================
         case 1:
         {
+            cout<<"\n--------------------\n";
+            cout<<"USER LOGIN\n";
+            cout<<"--------------------\n\n";
             string id, pinInput;
-
             cout << "Enter Account ID: ";
             getline(cin, id);
             id = trim(id);
@@ -68,7 +70,7 @@ void MainMenu::show()
 
             if (user != nullptr)
             {
-                cout << "Login Successful!\n";
+                cout << "\nLogin Successful!\n";
 
                 UserMenu userMenu(dataManager, user);
                 userMenu.show();
@@ -84,6 +86,9 @@ void MainMenu::show()
         // ================= ADMIN LOGIN =================
         case 2:
         {
+            cout<<"\n--------------------\n";
+            cout<<"ADMIN LOGIN\n";
+            cout<<"--------------------\n\n";
             string username, password;
 
             cout << "Enter Admin Username: ";
@@ -111,7 +116,7 @@ void MainMenu::show()
 
         // ================= EXIT =================
         case 3:
-            cout << "Exiting...\n";
+            cout << "\nExiting...\n";
             return;
 
         default:

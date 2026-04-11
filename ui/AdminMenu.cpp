@@ -2,6 +2,7 @@
 #include <cctype>
 #include "AdminMenu.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ bool AdminMenu::verifyAdmin()
 {
     string password;
 
-    cout << "Enter Admin Password to confirm: ";
+    cout << "\nEnter Admin Password to confirm: ";
     getline(cin, password);
     password = trim(password);
 
@@ -59,7 +60,7 @@ void AdminMenu::show()
         case 3: viewAllAccounts(); break;
         case 4: viewTotalBalance(); break;
         case 5:
-            cout << "Logging out...\n";
+            cout << "\nLogging out...\n";
             return;
         default:
             cout << "Invalid choice!\n";
@@ -70,13 +71,16 @@ void AdminMenu::show()
 // Create Account
 void AdminMenu::createAccount()
 {
+    cout<<"\n--------------------\n";
+    cout<<"CREATE ACCOUNT\n";
+    cout<<"--------------------\n\n";
     Account acc;
     string input;
 
     // Account ID
     while (true)
     {
-        cout << "Enter Account ID (8 alphanumeric): ";
+        cout << "\nEnter Account ID (8 alphanumeric): ";
         getline(cin, input);
         input = trim(input);
 
@@ -196,20 +200,22 @@ void AdminMenu::createAccount()
     // Initial transaction
     dataManager.addTransaction(
         acc.accountId,
-        "Account Created by Admin(System)",
+        "Account Created by Admin (System)",
         acc.balance,
         acc.balance
     );
 
-    cout << "Account Created Successfully!\n";
+    cout << "\nAccount Created Successfully!\n";
 }
 
 // Delete Account
 void AdminMenu::deleteAccount()
 {
+    cout<<"\n--------------------\n";
+    cout<<"DELETE ACCOUNT\n";
+    cout<<"--------------------\n\n";
     string id;
-
-    cout << "Enter Account ID to delete: ";
+    cout << "\nEnter Account ID to delete: ";
     getline(cin, id);
     id = trim(id);
 
@@ -222,7 +228,7 @@ void AdminMenu::deleteAccount()
     if (!verifyAdmin()) return;
 
     if (dataManager.deleteAccount(id))
-        cout << "Account deleted successfully!\n";
+        cout << "\nAccount deleted successfully!\n";
     else
         cout << "Account not found!\n";
 }
@@ -230,6 +236,9 @@ void AdminMenu::deleteAccount()
 // View Accounts
 void AdminMenu::viewAllAccounts()
 {
+    cout<<"\n--------------------\n";
+    cout<<"ALL ACCOUNT DASHBOARD\n";
+    cout<<"--------------------\n\n";
     if (!verifyAdmin()) return;
 
     auto accounts = dataManager.getAllAccounts();
@@ -240,20 +249,23 @@ void AdminMenu::viewAllAccounts()
         return;
     }
 
-    cout << "\n--- All Accounts ---\n";
+    cout << "\n-------------------------- All Accounts --------------------------\n\n";
     for (const auto& acc : accounts)
     {
-        cout << "ID: " << acc.accountId
-             << " | Name: " << acc.name
-             << " | Balance: " << acc.balance << "\n";
+        cout <<left << setw(10) << "ID: " << acc.accountId
+             << " | Name: " << setw(20) << acc.name
+             << " | Balance: " << setw(12) << acc.balance << "\n";
     }
 }
 
 // Total Balance
 void AdminMenu::viewTotalBalance()
 {
+    cout<<"\n--------------------\n";
+    cout<<"TOTAL BALANCE OF BANK\n";
+    cout<<"--------------------\n\n";
     if (!verifyAdmin()) return;
 
     double total = dataManager.getTotalBankBalance();
-    cout << "Total Bank Balance: Rs." << total << "\n";
+    cout << "\nTotal Bank Balance: Rs." << total << "\n";
 }

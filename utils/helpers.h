@@ -1,9 +1,6 @@
 #ifndef HELPERS_H
 #define HELPERS_H
-
 #include <string>
-
-//removed using namespace std
 
 std::string getCurrentTime();
 void clearInputBuffer();

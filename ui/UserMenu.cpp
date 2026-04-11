@@ -51,14 +51,15 @@ void UserMenu::show()
     while (true)
     {
         cout << "\n===== USER MENU =====\n";
-        cout << "1. Check Balance\n";
+        cout << "\nWelcome, " << currentUser->name << "!\n\n";
+        cout << "\n1. Check Balance\n";
         cout << "2. Deposit\n";
         cout << "3. Withdraw\n";
         cout << "4. Transfer\n";
         cout << "5. Transaction History\n";
         cout << "6. Change PIN\n";
         cout << "7. Logout\n";
-        cout << "Enter choice: ";
+        cout << "\nEnter choice: ";
 
         getline(cin, input);
         input = trim(input);
@@ -84,11 +85,11 @@ void UserMenu::show()
             return;
 
         case 7:
-            cout << "Logging out...\n";
+            cout << "\nLogging out...\n";
             return;
 
         default:
-            cout << "Invalid choice!\n";
+            cout << "\nInvalid choice!\n";
         }
     }
 }
@@ -96,16 +97,23 @@ void UserMenu::show()
 // ================= BALANCE =================
 void UserMenu::checkBalance()
 {
+    cout<<"\n--------------------\n";
+    cout<<"BALANCE SECTION\n";
+    cout<<"--------------------\n\n";
     if (!verifyUserPin()) return;
 
-    cout << "Balance: Rs." << currentUser->balance << endl;
+    cout << "\nCurrent Balance: Rs." << currentUser->balance << endl;
 }
 
 // ================= DEPOSIT =================
 void UserMenu::deposit()
 {
+    cout<<"\n--------------------\n";
+    cout<<"DEPOSIT SECTION\n";
+    cout<<"--------------------\n\n";
+    
     string input;
-    cout << "Enter amount to deposit: ";
+    cout << "\nEnter amount to deposit: ";
     getline(cin, input);
 
     if (!isDouble(input))
@@ -129,12 +137,15 @@ void UserMenu::deposit()
     dataManager.updateBalance(currentUser->accountId, currentUser->balance);
     dataManager.addTransaction(currentUser->accountId, "Deposited by Self", amount, currentUser->balance);
 
-    cout << "Deposit successful!\n";
+    cout << "\nDeposit successful!\n";
 }
 
 // ================= WITHDRAW =================
 void UserMenu::withdraw()
 {
+    cout<<"\n--------------------\n";
+    cout<<"WITHDRAW SECTION\n";
+    cout<<"--------------------\n\n";
     string input;
     cout << "Enter amount to withdraw: ";
     getline(cin, input);
@@ -164,12 +175,15 @@ void UserMenu::withdraw()
     dataManager.updateBalance(currentUser->accountId, currentUser->balance);
     dataManager.addTransaction(currentUser->accountId, "Withdrawn by Self", amount, currentUser->balance);
 
-    cout << "Withdrawal successful!\n";
+    cout << "\nWithdrawal successful!\n";
 }
 
 // ================= TRANSFER =================
 void UserMenu::transfer()
 {
+    cout<<"\n--------------------\n";
+    cout<<"TRANSFER SECTION\n";
+    cout<<"--------------------\n\n";
     string id, input;
 
     cout << "Enter receiver ID: ";
@@ -231,7 +245,7 @@ void UserMenu::transfer()
     dataManager.addTransaction(currentUser->accountId, senderMsg, amount, currentUser->balance);
     dataManager.addTransaction(receiver->accountId, receiverMsg, amount, receiver->balance);
 
-    cout << "Transfer successful!\n";
+    cout << "\nTransfer successful!\n";
 
     delete receiver;
 }
@@ -239,6 +253,9 @@ void UserMenu::transfer()
 // ================= HISTORY =================
 void UserMenu::showTransactionHistory()
 {
+    cout<<"\n--------------------\n";
+    cout<<"HISTORY SECTION\n";
+    cout<<"--------------------\n\n";
     if (!verifyUserPin()) return;
 
     vector<Transaction> transactions = dataManager.getTransactions(currentUser->accountId);
@@ -249,11 +266,11 @@ void UserMenu::showTransactionHistory()
         return;
     }
 
-    cout << "\n--- Transaction History ---\n";
+    cout << "\n----------------------------------------- Transaction History -----------------------------------------\n\n";
 
     for (auto &t : transactions)
     {
-        cout << left << setw(30) << t.type
+        cout << left << setw(35) << t.type
              << "| Rs." << setw(10) << t.amount
              << "| Balance: Rs." << setw(12) << t.balanceAfter
              << "| Time: " << t.timestamp << endl;
@@ -263,6 +280,9 @@ void UserMenu::showTransactionHistory()
 // ================= CHANGE PIN =================
 void UserMenu::changePin()
 {
+    cout<<"\n--------------------\n";
+    cout<<"CHANGE PIN SECTION\n";
+    cout<<"--------------------\n\n";
     string input;
 
     cout << "Enter current PIN: ";
@@ -310,5 +330,5 @@ void UserMenu::changePin()
 
     currentUser->pin = newPin;
 
-    cout << "PIN changed successfully! Please login again.\n";
+    cout << "\nPIN changed successfully! Please login again with your new PIN.\n";
 }

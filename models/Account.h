@@ -16,7 +16,7 @@ public:
 
     //  NEW: Transaction History
     vector<Transaction> transactions; // Store Transaction objects 
-    // 🔹 Constructor
+    // Constructor
     Account(int id, std::string n, double bal, int p)
     {
         accountId = id;
@@ -25,10 +25,10 @@ public:
         pin = p;
     }
 
-    // 🔹 Default Constructor (IMPORTANT)
+    // Default Constructor (IMPORTANT)
     Account() {}
 
-    // 🔹 Add transaction
+    // Add transaction
     void addTransaction(const Transaction &t)
     {
         transactions.push_back(t);
