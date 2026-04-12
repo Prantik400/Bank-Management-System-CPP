@@ -236,9 +236,9 @@ void AdminMenu::deleteAccount()
 // View Accounts
 void AdminMenu::viewAllAccounts()
 {
-    cout<<"\n--------------------\n";
+    cout<<"\n---------------------\n";
     cout<<"ALL ACCOUNT DASHBOARD\n";
-    cout<<"--------------------\n\n";
+    cout<<"---------------------\n\n";
     if (!verifyAdmin()) return;
 
     auto accounts = dataManager.getAllAccounts();

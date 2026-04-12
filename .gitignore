@@ -1,4 +1,12 @@
+# Ignore env files
 .env
+
+# Ignore compiled binaries
 *.exe
-main
+bank
+
+# OS files
+.DS_Store
+Thumbs.db
+
 .vscode/
