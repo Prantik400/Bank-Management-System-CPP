@@ -13,7 +13,7 @@ int main()
     MYSQL* conn = DB::connect();
     if (conn != NULL) {
         cout << "\nDB Connected Successfully!\n";
-        mysql_close(conn);
+        //mysql_close(conn);
     }
     MainMenu menu(dataManager);
     menu.show();
