@@ -1,16 +1,14 @@
 #!/bin/bash
 
-echo "Loading environment variables..."
+echo "Checking environment variables..."
 
-if [ -f .env ]; then
-  set -o allexport
-  source .env
-  set +o allexport
-else
-  echo ".env file not found!"
-  echo "Please create .env file (see .env.example)"
-  exit 1
+if [ -z "$DB_HOST" ] || [ -z "$DB_USER" ] || [ -z "$DB_PASS" ] || [ -z "$DB_NAME" ] || [ -z "$DB_PORT" ]; then
+    echo "Environment variables not set!"
+    echo "Use .env file or create"
+    exit 1
 fi
+
+echo "Environment variables loaded"
 
 echo "Compiling..."
 g++ main.cpp core/*.cpp data/*.cpp models/*.cpp database/*.cpp ui/*.cpp auth/*.cpp utils/*.cpp -o bank -lmysqlclient
