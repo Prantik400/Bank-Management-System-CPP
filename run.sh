@@ -1,17 +1,17 @@
 #!/bin/bash
 
-echo "Checking environment..."
+echo "Loading environment variables..."
 
-if [ -z "$DB_HOST" ] || [ -z "$DB_USER" ] || [ -z "$DB_PASS" ]; then
-  echo "Environment variables not set!"
-  echo "Please set DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT"
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
+else
+  echo ".env file not found!"
+  echo "Please create .env file (see .env.example)"
   exit 1
 fi
 
 echo "Compiling..."
-
 g++ main.cpp core/*.cpp data/*.cpp models/*.cpp database/*.cpp ui/*.cpp auth/*.cpp utils/*.cpp -o bank -lmysqlclient
 
 echo "Running..."
-
 ./bank

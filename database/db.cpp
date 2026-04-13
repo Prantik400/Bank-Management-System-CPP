@@ -26,9 +26,6 @@ MYSQL* DB::connect() {
     }
 
     int port =atoi(port_str); //SSL without strict verification
-    my_bool ssl=0;
-    mysql_options(conn, MYSQL_OPT_SSL_ENFORCE, &ssl);
-    mysql_options(conn, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &ssl);
     if (!mysql_real_connect(
         conn, 
         host, 
