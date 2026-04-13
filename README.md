@@ -119,6 +119,7 @@ Installation and Setup
 Step 1: Clone Repository
 
 git clone <https://github.com/Prantik400/Bank-Management-System-CPP>
+
 cd Bank-Management-System-CPP
 
 ---
@@ -173,14 +174,9 @@ Screenshots
 
 Create a folder named "screenshots/" and include images:
 
-screenshots\mainMenu.png
-screenshots\userMenuTransactionHistory.png
-screenshots\adminMenuAllAccounts.png
-
-Example:
-
-Main Menu
-"Main Menu" (screenshots/main-menu.png)
+../screenshots/mainMenu.png
+../screenshots/userMenuTransactionHistory.png
+../screenshots/adminMenuAllAccounts.png
 
 ---
 
