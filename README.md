@@ -213,4 +213,4 @@ Prantik
 
 License
 
-This project is for educational 
+This project is for educational purposes.
