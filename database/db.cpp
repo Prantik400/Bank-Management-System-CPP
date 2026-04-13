@@ -12,7 +12,7 @@ MYSQL* DB::connect() {
         return NULL;
     }
 
-    cout << "Connecting to Railway DB...\n";
+    cout << "Connecting to MySQL DB...\n";
 
     const char* host = getenv("DB_HOST");
     const char* user = getenv("DB_USER");
@@ -26,13 +26,6 @@ MYSQL* DB::connect() {
     }
 
     int port = atoi(port_str);
-
-    // DISABLE SSL SAFELY (works in MinGW + Linux)
-    #ifdef MYSQL_OPT_SSL_ENFORCE
-        my_bool ssl = 0;
-        mysql_options(conn, MYSQL_OPT_SSL_ENFORCE, &ssl);
-    #endif
-
     // CONNECT
     if (!mysql_real_connect(
         conn,
@@ -42,7 +35,7 @@ MYSQL* DB::connect() {
         db,
         port,
         NULL,
-        CLIENT_MULTI_STATEMENTS)) {
+        0)) {
 
         cout << "Connection Failed: " << mysql_error(conn) << endl;
         return NULL;
