@@ -160,15 +160,15 @@ Screenshots
 
 Main Menu
 
-"Main Menu" (screenshots/mainMenu.png)
+![Main Menu](screenshots/mainMenu.png)
 
 Transaction History
 
-"Transactions" (screenshots/userMenuTransactionHistory.png)
+![Transactions](screenshots/userMenuTransactionHistory.png)
 
 Admin View
 
-"Admin" (screenshots/adminMenuAllAccounts.png)
+![Admin](screenshots/adminMenuAllAccounts.png)
 
 ---
 
