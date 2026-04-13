@@ -3,7 +3,9 @@
 echo "Loading environment variables..."
 
 if [ -f .env ]; then
-  export $(grep -v '^#' .env | xargs)
+  set -o allexport
+  source .env
+  set +o allexport
 else
   echo ".env file not found!"
   echo "Please create .env file (see .env.example)"
